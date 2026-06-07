@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>お問い合わせ | ProDesign</title>
+<meta name="description" content="株式会社プロデザインへのお問い合わせ。機械設計・自動機製作・コンサルティングのご相談はこちらから。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="header__inner">
+    <a href="index.html" class="header__logo"><span class="header__logo-pro">Pro</span><span class="header__logo-design">Design</span></a>
+    <nav class="nav">
+      <ul class="nav__list">
+        <li class="nav__item"><a href="index.html">HOME</a></li>
+        <li class="nav__item"><a href="business.html">BUSINESS</a></li>
+        <li class="nav__item"><a href="works.html">WORKS</a></li>
+        <li class="nav__item"><a href="company.html">COMPANY</a></li>
+        <li class="nav__item"><a href="news.html">NEWS</a></li>
+        <li class="nav__item nav__item--cta"><a href="contact.html">CONTACT</a></li>
+      </ul>
+    </nav>
+    <button class="hamburger" aria-label="メニュー" id="hamburger"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<section class="page-hero page-hero--contact">
+  <div class="page-hero__inner">
+    <p class="page-hero__sub">06 — CONTACT</p>
+    <h1 class="page-hero__title">お問い合わせ<span class="page-hero__title-en">GET IN TOUCH</span></h1>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+    <p class="section__lead" style="margin-bottom:0;">
+      機械設計・自動機製作・コンサルティングなど、<br>
+      どのようなご相談も、お気軽にお問い合わせください。
+    </p>
+
+    <div class="contact-grid">
+      <!-- Left: Contact Info -->
+      <aside class="contact-info">
+        <div class="contact-info__item">
+          <span class="contact-info__label">PHONE</span>
+          <p class="contact-info__value">0182-32-1121</p>
+        </div>
+        <div class="contact-info__item">
+          <span class="contact-info__label">FAX</span>
+          <p class="contact-info__value">0182-32-1145</p>
+        </div>
+        <div class="contact-info__item">
+          <span class="contact-info__label">EMAIL</span>
+          <p class="contact-info__value">info@prodesign.co.jp</p>
+        </div>
+        <div class="contact-info__item">
+          <span class="contact-info__label">ADDRESS</span>
+          <p class="contact-info__value">〒013-0052<br>秋田県横手市大屋寺内字堀ノ内61</p>
+        </div>
+        <div class="contact-info__item">
+          <span class="contact-info__label">HOURS</span>
+          <p class="contact-info__value">平日 9:00〜18:00<br>（土日祝休）</p>
+        </div>
+      </aside>
+
+      <!-- Right: Form -->
+      <form class="contact-form" onsubmit="event.preventDefault(); alert('お問い合わせ機能はWordPress連携時に有効化されます。');">
+        <div class="form-row">
+          <label for="name">お名前 / NAME *</label>
+          <input type="text" id="name" name="name" required>
+        </div>
+        <div class="form-row">
+          <label for="company">会社名 / COMPANY</label>
+          <input type="text" id="company" name="company">
+        </div>
+        <div class="form-row">
+          <label for="email">メールアドレス / EMAIL *</label>
+          <input type="email" id="email" name="email" required>
+        </div>
+        <div class="form-row">
+          <label for="phone">電話番号 / PHONE</label>
+          <input type="tel" id="phone" name="phone">
+        </div>
+        <div class="form-row">
+          <label for="subject">お問い合わせ種別 / SUBJECT *</label>
+          <select id="subject" name="subject" required>
+            <option value="">選択してください</option>
+            <option value="design">機械設計のご相談</option>
+            <option value="manufacturing">機械設計・製造のご相談</option>
+            <option value="consulting">コンサルティング・セミナー</option>
+            <option value="other">その他</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="message">お問い合わせ内容 / MESSAGE *</label>
+          <textarea id="message" name="message" required></textarea>
+        </div>
+        <button type="submit" class="contact-form__submit">送信する <span class="arrow">→</span></button>
+      </form>
+    </div>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer__grid">
+      <div class="footer__brand">
+        <a href="index.html" class="footer__logo"><span class="header__logo-pro">Pro</span><span class="header__logo-design">Design</span></a>
+        <p class="footer__addr">〒013-0052 秋田県横手市大屋寺内字堀ノ内61<br>TEL: 0182-32-1121 / FAX: 0182-32-1145</p>
+      </div>
+      <div class="footer__nav">
+        <p class="footer__nav-title">SITE MAP</p>
+        <ul>
+          <li><a href="business.html">事業内容</a></li>
+          <li><a href="works.html">施工実績</a></li>
+          <li><a href="company.html">企業情報</a></li>
+          <li><a href="news.html">ニュース</a></li>
+          <li><a href="contact.html">お問い合わせ</a></li>
+        </ul>
+      </div>
+      <div class="footer__nav">
+        <p class="footer__nav-title">RELATED</p>
+        <ul>
+          <li><a href="#">あきた企業活性化センター</a></li>
+          <li><a href="#">秋田県工業連合会</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="footer__copy">© 2026 ProDesign Co., Ltd. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script src="js/main.js"></script>
+</body>
+</html>

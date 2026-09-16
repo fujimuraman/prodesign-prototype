@@ -4,8 +4,8 @@
 
 ## 更新ページ
 
-https://prodesign.pages.dev/admin
-（正式公開後は https://prodesign.co.jp/admin になります）
+https://prodesign.co.jp/admin （新サイト公開後に有効になります）
+※ 今のプレビュー（https://fujimuraman.github.io/prodesign-prototype/admin.html）は見た目の確認用で、ログインはできません
 
 ## 最初に一度だけ（新規登録）
 
@@ -53,8 +53,9 @@ https://prodesign.pages.dev/admin
 
 ## 仕組み（管理者向け）
 
-- ホスティング: Cloudflare Pages（静的ページ＋Functions）。データ: D1（記事・沿革・アカウント）、KV（画像）。メール送信: Resend
-- 認証: パスワードは PBKDF2-SHA256 でハッシュ保存。ログインは毎回メール認証コード（信頼済み端末は30日省略）。セッションは HttpOnly Cookie（30日）
-- 登録できるメールは `wrangler.toml` の `ALLOWED_EMAILS`。追加したい時はここに足して再デプロイ
-- デプロイ: `npx wrangler pages deploy .`（このフォルダから）。DBスキーマは `schema.sql`、初回移行は `_migrate_to_d1.py` → `migrate.sql`
-- 記事ページは `/post/<slug>`（`templates/news_post.html` を雛形にサーバー側で生成）。旧 `post-xxx.html` のURLは自動で転送
+- 置き場所: さくらのレンタルサーバー（静的HTML＋PHP 8＋SQLite）。設置手順は `DEPLOY_SAKURA.md`
+- データ: `data/prodesign.sqlite`（記事・沿革・アカウント・ログ）、画像は `uploads/`。メールは PHP の `mail()`（差出人 info@prodesign.co.jp）
+- 認証: パスワードは bcrypt でハッシュ保存。ログインは毎回メール認証コード（信頼済み端末は30日省略）。セッションは HttpOnly Cookie（30日）。10回失敗で15分ロック
+- 登録できるメールは `config.php` の `allowed_emails`。追加したい時はここに足す
+- 記事ページは `/post/<slug>`（`templates/news_post.html` を雛形に `post.php` が生成）。旧 `post-xxx.html` のURLは自動で転送。一覧・トップ・企業情報は `page.php` が静的HTMLにDBの内容を差し込む
+- GitHub Pages のプレビューは `php tools/export_static.php` で同じ見た目に書き出したもの（更新機能は動かない）

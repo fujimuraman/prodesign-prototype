@@ -1,0 +1,35 @@
+# ProDesign 公式サイト（さくらのレンタルサーバー / Apache）
+Options -Indexes
+AddDefaultCharset UTF-8
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+
+  # 旧URL互換: /post-xxx.html → /post/xxx
+  RewriteRule ^post-([\w-]+)\.html$ /post/$1 [R=301,L]
+
+  # 記事ページ
+  RewriteRule ^post/([\w-]+)/?$ post.php?slug=$1 [L,QSA]
+
+  # API
+  RewriteRule ^api/(.*)$ api.php?r=$1 [L,QSA]
+
+  # DBの内容を差し込むページ
+  RewriteRule ^$ page.php?p=index [L]
+  RewriteRule ^(index|news|company)\.html$ page.php?p=$1 [L]
+
+  # 更新ページ（拡張子なしでもOK）
+  RewriteRule ^admin/?$ admin.html [L]
+</IfModule>
+
+# 設定・スキーマ・データを直接見せない
+<FilesMatch "^(config\.php|lib\.php|schema\.sql|migrate\.sql|wrangler\.toml|NEWS_HOWTO\.md|.*\.md|.*\.py)$">
+  Require all denied
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

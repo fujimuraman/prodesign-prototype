@@ -256,7 +256,10 @@ async function boot() {
     const j = await api("/auth/me");
     if (j.user) { me = j.user; showAdmin(); }
     else { showAuth("v-login"); if (!j.hasAdmin) { setMsg("authMsg", "info", "まだ管理者が登録されていません。「はじめての方（新規登録）」から登録してください。"); } }
-  } catch (e) { showAuth("v-login"); setMsg("authMsg", "ng", e.message); }
+  } catch (e) {
+    showAuth("v-login");
+    setMsg("authMsg", "info", "この画面はプレビュー（見た目の確認用）です。ログイン・記事の投稿は正式なサーバーに設置したあとに使えるようになります。");
+  }
 }
 $("btnLogin").onclick = async () => {
   const email = $("lEmail").value.trim(), password = $("lPass").value;

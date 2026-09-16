@@ -1222,7 +1222,7 @@ main.page-main { padding: 140px 0; }
 }
 @media (max-width: 768px) {
   /* PC用の改行（<br>）はスマホでは効かせず、自然に折り返す */
-  .hero__desc br, .section__lead br, .intro__text br, .cta__lead br, .message__body br,
+  .hero__desc br, .section__lead br, .intro__text br, .message__body br,
   .philosophy__body br, .section__title br, .cta__title br, .message__title br, .strength__title br { display: none; }
 
   /* ヒーロー: 4行のキャッチを1つの文として流す（単語の途中で切れない） */
@@ -1262,4 +1262,17 @@ main.page-main { padding: 140px 0; }
 @media (max-width: 400px) {
   .container { padding: 0 20px; }
   .header__inner { padding: 0 20px; }
+}
+
+/* スマホでは中央寄せをやめて左寄せに統一（折り返し位置のばらつきが目立たない） */
+@media (max-width: 768px) {
+  .intro, .intro .section__title, .intro__text { text-align: left; }
+  .cta, .cta__title, .cta__lead, .cta .section__label { text-align: left; }
+  .cta__button { margin-left: 0; }
+  .page-hero__inner, .contact-intro { text-align: left; }
+}
+
+@media (max-width: 768px) {
+  /* CTAの背景写真（文字入り）が透けて読みづらいので暗めに */
+  .cta { background-image: linear-gradient(180deg, rgba(15,17,18,0.94), rgba(15,17,18,0.97)), url('../images/slide03.jpg'); }
 }

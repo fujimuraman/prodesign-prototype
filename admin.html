@@ -9,27 +9,33 @@
   :root { --acc:#8a6a3c; --line:#e3e1dc; --soft:#f5f4f1; --text:#1a1a1a; --mute:#777; --ok:#2e7d32; --ng:#c62828; }
   * { box-sizing:border-box; }
   body { margin:0; font-family:"Noto Sans JP","Hiragino Sans","Yu Gothic",system-ui,sans-serif; color:var(--text); background:#fff; font-size:16px; line-height:1.7; }
-  header { display:flex; align-items:center; justify-content:space-between; padding:14px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:5; }
+  header { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:14px 24px; border-bottom:1px solid var(--line); background:#fff; position:sticky; top:0; z-index:5; }
   header h1 { font-size:18px; margin:0; font-weight:600; letter-spacing:.04em; }
   header h1 small { font-weight:400; color:var(--mute); margin-left:10px; font-size:13px; }
+  .who { font-size:13px; color:var(--mute); display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:flex-end; }
   .wrap { max-width:960px; margin:0 auto; padding:24px 20px 80px; }
+  .narrow { max-width:520px; margin:40px auto; }
   .tabs { display:flex; gap:8px; margin:8px 0 24px; flex-wrap:wrap; }
-  .tab { padding:12px 22px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:16px; border-radius:4px; }
+  .tab { padding:12px 22px; border:1px solid var(--line); background:#fff; cursor:pointer; font-size:16px; border-radius:4px; font-family:inherit; }
   .tab.on { background:var(--text); color:#fff; border-color:var(--text); }
   .panel { display:none; } .panel.on { display:block; }
-  .card { border:1px solid var(--line); border-radius:6px; padding:22px; margin-bottom:20px; background:#fff; }
-  .card h2 { font-size:18px; margin:0 0 16px; }
+  .card { border:1px solid var(--line); border-radius:6px; padding:24px; margin-bottom:20px; background:#fff; }
+  .card h2 { font-size:18px; margin:0 0 6px; }
+  .card .lead { font-size:14px; color:var(--mute); margin:0 0 14px; }
   label { display:block; font-weight:600; margin:14px 0 6px; font-size:15px; }
   label small { font-weight:400; color:var(--mute); margin-left:8px; }
-  input[type=text], input[type=date], select, textarea { width:100%; font-size:17px; padding:12px 14px; border:1px solid #cfcdc7; border-radius:4px; font-family:inherit; background:#fff; }
+  input[type=text], input[type=date], input[type=email], input[type=password], select, textarea { width:100%; font-size:17px; padding:12px 14px; border:1px solid #cfcdc7; border-radius:4px; font-family:inherit; background:#fff; }
+  input.code { font-size:30px; letter-spacing:.35em; text-align:center; font-family:ui-monospace,Menlo,Consolas,monospace; }
   textarea { min-height:260px; line-height:1.8; }
   input:focus, textarea:focus, select:focus { outline:2px solid var(--acc); border-color:var(--acc); }
   .row { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
   @media (max-width:640px){ .row { grid-template-columns:1fr; } }
-  .btn { display:inline-block; padding:14px 28px; font-size:17px; border-radius:4px; border:1px solid var(--text); background:var(--text); color:#fff; cursor:pointer; font-family:inherit; }
+  .btn { display:inline-block; padding:14px 28px; font-size:17px; border-radius:4px; border:1px solid var(--text); background:var(--text); color:#fff; cursor:pointer; font-family:inherit; text-decoration:none; }
   .btn.primary { background:var(--acc); border-color:var(--acc); }
   .btn.ghost { background:#fff; color:var(--text); }
   .btn.danger { background:#fff; color:var(--ng); border-color:var(--ng); }
+  .btn.sm { padding:8px 14px; font-size:14px; }
+  .btn.link { border:0; background:none; color:var(--acc); text-decoration:underline; padding:6px 0; font-size:15px; }
   .btn:disabled { opacity:.5; cursor:default; }
   .actions { display:flex; gap:12px; flex-wrap:wrap; margin-top:22px; align-items:center; }
   .msg { padding:14px 16px; border-radius:4px; margin:16px 0; display:none; white-space:pre-wrap; }
@@ -40,9 +46,7 @@
   .item { display:grid; grid-template-columns:110px 96px 1fr auto; gap:14px; align-items:center; padding:14px 6px; border-bottom:1px solid var(--line); }
   @media (max-width:640px){ .item { grid-template-columns:1fr; gap:6px; } }
   .item .d { color:var(--mute); font-size:14px; } .item .c { font-size:12px; background:var(--soft); padding:3px 8px; border-radius:3px; text-align:center; }
-  .item .t { font-size:16px; }
   .item .b { display:flex; gap:8px; }
-  .item .b button { padding:8px 14px; font-size:14px; }
   .preview { border:1px dashed #cfcdc7; padding:16px; background:var(--soft); min-height:80px; }
   .preview img { max-width:100%; height:auto; display:block; margin:10px 0; }
   .thumb { max-width:260px; display:block; margin-top:10px; border:1px solid var(--line); }
@@ -52,153 +56,191 @@
   .hist input { font-size:15px; padding:8px 10px; }
   #busy { position:fixed; inset:0; background:rgba(255,255,255,.7); display:none; align-items:center; justify-content:center; font-size:18px; z-index:9; }
   #busy.on { display:flex; }
+  .check { display:flex; align-items:center; gap:10px; font-weight:400; font-size:15px; margin-top:14px; }
+  .check input { width:20px; height:20px; }
+  .dev { background:#fff8e1; border:1px dashed #f0c36d; padding:10px 14px; font-size:14px; margin-top:12px; display:none; }
 </style>
 </head>
 <body>
 <header>
   <h1>ProDesign 更新ページ <small>ニュース・事業実績をここから更新できます</small></h1>
-  <button class="btn ghost" id="btnSettings" style="padding:8px 14px;font-size:14px;">設定</button>
+  <div class="who" id="who"></div>
 </header>
 
-<div class="wrap">
-  <div class="msg info" id="setupMsg">はじめに右上の「設定」から、薫さんからもらった「アクセスキー」を登録してください。</div>
+<div class="wrap" id="app">
 
-  <div class="tabs">
-    <button class="tab on" data-tab="news">ニュース一覧</button>
-    <button class="tab" data-tab="edit">新しい記事を書く</button>
-    <button class="tab" data-tab="history">沿革・事業実績</button>
+  <!-- ====== 認証（ログイン前） ====== -->
+  <div id="authArea" class="narrow" style="display:none">
+    <div class="msg" id="authMsg"></div>
+    <div class="dev" id="devBox"></div>
+
+    <div class="card" id="v-login">
+      <h2>ログイン</h2>
+      <p class="lead">登録したメールアドレスとパスワードを入力してください。続けて、メールに届く6桁の認証コードを入力します。</p>
+      <label>メールアドレス</label><input type="email" id="lEmail" autocomplete="username" inputmode="email">
+      <label>パスワード</label><input type="password" id="lPass" autocomplete="current-password">
+      <label class="check"><input type="checkbox" id="lRemember" checked> この端末を30日間記憶する（次回から認証コードを省略）</label>
+      <div class="actions"><button class="btn primary" id="btnLogin">ログイン</button></div>
+      <div class="actions" style="margin-top:10px"><button class="btn link" data-go="v-forgot">パスワードを忘れた方</button><button class="btn link" data-go="v-register" id="linkRegister">はじめての方（新規登録）</button></div>
+    </div>
+
+    <div class="card" id="v-code" style="display:none">
+      <h2>認証コードの入力</h2>
+      <p class="lead" id="codeLead">メールに届いた6桁の認証コードを入力してください（有効期限10分）。</p>
+      <label>認証コード</label><input type="text" class="code" id="cCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000">
+      <div class="actions"><button class="btn primary" id="btnCode">確認する</button><button class="btn ghost" data-go="v-login">戻る</button></div>
+      <p class="hint" style="margin-top:14px">メールが届かない場合は、迷惑メールフォルダをご確認ください。それでも届かない時は「戻る」からもう一度お試しください。</p>
+    </div>
+
+    <div class="card" id="v-register" style="display:none">
+      <h2>新規登録（はじめての方）</h2>
+      <p class="lead">登録できるのは、あらかじめ許可されたメールアドレスだけです。登録後、メールに届く認証コードで本人確認をします。</p>
+      <label>メールアドレス</label><input type="email" id="rEmail" autocomplete="username" inputmode="email">
+      <label>パスワード <small>8文字以上・英字と数字を含む</small></label><input type="password" id="rPass" autocomplete="new-password">
+      <label>パスワード（確認）</label><input type="password" id="rPass2" autocomplete="new-password">
+      <div class="actions"><button class="btn primary" id="btnRegister">登録して認証コードを受け取る</button><button class="btn ghost" data-go="v-login">戻る</button></div>
+    </div>
+
+    <div class="card" id="v-forgot" style="display:none">
+      <h2>パスワードの再設定</h2>
+      <p class="lead">登録したメールアドレスに認証コードを送ります。届いたコードと新しいパスワードを入力すると再設定できます。</p>
+      <label>メールアドレス</label><input type="email" id="fEmail" autocomplete="username" inputmode="email">
+      <div class="actions"><button class="btn primary" id="btnForgot">認証コードを送る</button><button class="btn ghost" data-go="v-login">戻る</button></div>
+    </div>
+
+    <div class="card" id="v-reset" style="display:none">
+      <h2>新しいパスワードを設定</h2>
+      <label>認証コード</label><input type="text" class="code" id="sCode" inputmode="numeric" maxlength="6" autocomplete="one-time-code" placeholder="000000">
+      <label>新しいパスワード <small>8文字以上・英字と数字を含む</small></label><input type="password" id="sPass" autocomplete="new-password">
+      <label>新しいパスワード（確認）</label><input type="password" id="sPass2" autocomplete="new-password">
+      <div class="actions"><button class="btn primary" id="btnReset">再設定する</button><button class="btn ghost" data-go="v-login">戻る</button></div>
+    </div>
   </div>
 
-  <!-- ===== ニュース一覧 ===== -->
-  <section class="panel on" id="panel-news">
-    <div class="card">
-      <h2>ニュース一覧 <span class="hint" id="newsCount"></span></h2>
-      <div class="msg" id="newsMsg"></div>
-      <div class="list" id="newsList"><p class="hint" style="padding:16px 0;">読み込み中…</p></div>
+  <!-- ====== 管理（ログイン後） ====== -->
+  <div id="adminArea" style="display:none">
+    <div class="tabs">
+      <button class="tab on" data-tab="news">ニュース一覧</button>
+      <button class="tab" data-tab="edit">新しい記事を書く</button>
+      <button class="tab" data-tab="history">沿革・事業実績</button>
+      <button class="tab" data-tab="account">アカウント設定</button>
     </div>
-  </section>
 
-  <!-- ===== 記事の作成・編集 ===== -->
-  <section class="panel" id="panel-edit">
-    <div class="card">
-      <h2 id="editTitle">新しい記事を書く</h2>
-      <div class="msg" id="editMsg"></div>
-      <input type="hidden" id="editSlug">
-      <label>タイトル <small>例：令和8年 9月 大仙市メーカー様に箔研磨装置を納入しました</small></label>
-      <input type="text" id="fTitle" placeholder="記事の見出し">
-      <div class="row">
-        <div>
-          <label>日付</label>
-          <input type="date" id="fDate">
+    <section class="panel on" id="panel-news">
+      <div class="card">
+        <h2>ニュース一覧 <span class="hint" id="newsCount"></span></h2>
+        <div class="msg" id="newsMsg"></div>
+        <div class="list" id="newsList"><p class="hint" style="padding:16px 0;">読み込み中…</p></div>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-edit">
+      <div class="card">
+        <h2 id="editTitle">新しい記事を書く</h2>
+        <div class="msg" id="editMsg"></div>
+        <input type="hidden" id="editSlug">
+        <label>タイトル <small>例：令和8年 9月 大仙市メーカー様に箔研磨装置を納入しました</small></label>
+        <input type="text" id="fTitle" placeholder="記事の見出し">
+        <div class="row">
+          <div><label>日付</label><input type="date" id="fDate"></div>
+          <div><label>分類</label><select id="fCat"><option>お知らせ</option><option>実績</option><option>専門家支援</option><option>セミナー</option><option>メディア</option></select></div>
         </div>
-        <div>
-          <label>分類</label>
-          <select id="fCat">
-            <option>お知らせ</option><option>実績</option><option>専門家支援</option><option>セミナー</option><option>メディア</option>
-          </select>
+        <label>写真 <small>1枚（任意・4MBまで）。一覧と記事の先頭に表示されます</small></label>
+        <input type="file" id="fImage" accept="image/*">
+        <img id="fImageThumb" class="thumb" style="display:none" alt="">
+        <input type="hidden" id="fImageUrl">
+        <button class="btn link" id="btnImageClear" style="display:none">写真を外す</button>
+        <label>本文 <small>空行で段落が分かれます。「●」や「・」で始まる行は箇条書きになります</small></label>
+        <textarea id="fBody" placeholder="本文を入力してください"></textarea>
+        <label>プレビュー</label>
+        <div class="preview" id="fPreview"></div>
+        <div class="actions">
+          <button class="btn primary" id="btnSave">この内容で公開する</button>
+          <button class="btn ghost" id="btnNew">入力をクリア</button>
+          <button class="btn danger" id="btnDelete" style="display:none">この記事を削除</button>
+          <span class="hint">公開すると、すぐにサイトに反映されます（表示まで最大1分）。</span>
         </div>
       </div>
-      <label>写真 <small>1枚（任意）。一覧と記事の先頭に表示されます</small></label>
-      <input type="file" id="fImage" accept="image/*">
-      <img id="fImageThumb" class="thumb" style="display:none" alt="">
-      <input type="hidden" id="fImageName">
-      <label>本文 <small>空行で段落が分かれます。「●」や「・」で始まる行は箇条書きになります</small></label>
-      <textarea id="fBody" placeholder="本文を入力してください"></textarea>
-      <label>プレビュー</label>
-      <div class="preview" id="fPreview"></div>
-      <div class="actions">
-        <button class="btn primary" id="btnSave">この内容で公開する</button>
-        <button class="btn ghost" id="btnNew">入力をクリア</button>
-        <button class="btn danger" id="btnDelete" style="display:none">この記事を削除</button>
-        <span class="hint">公開ボタンを押してから、サイトに反映されるまで2〜3分かかります。</span>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- ===== 沿革・事業実績 ===== -->
-  <section class="panel" id="panel-history">
-    <div class="card">
-      <h2>沿革・事業実績 <span class="hint">企業情報ページの時系列に表示されます</span></h2>
-      <div class="msg" id="histMsg"></div>
-      <div class="hist" style="font-weight:600;border-bottom:2px solid var(--line);"><span>年（西暦）</span><span>和暦</span><span>内容</span><span></span></div>
-      <div id="histRows"></div>
-      <div class="actions">
-        <button class="btn ghost" id="btnHistAdd">＋ 行を追加</button>
-        <button class="btn primary" id="btnHistSave">この内容で公開する</button>
-        <span class="hint">例：年「2026.09」 和暦「令和8年」 内容「箔研磨装置納入（大仙市メーカー様）」</span>
+    <section class="panel" id="panel-history">
+      <div class="card">
+        <h2>沿革・事業実績 <span class="hint">企業情報ページの時系列に表示されます</span></h2>
+        <div class="msg" id="histMsg"></div>
+        <div class="hist" style="font-weight:600;border-bottom:2px solid var(--line);"><span>年（西暦）</span><span>和暦</span><span>内容</span><span></span></div>
+        <div id="histRows"></div>
+        <div class="actions">
+          <button class="btn ghost" id="btnHistAdd">＋ 行を追加</button>
+          <button class="btn primary" id="btnHistSave">この内容で公開する</button>
+          <span class="hint">例：年「2026.09」 和暦「令和8年」 内容「箔研磨装置納入（大仙市メーカー様）」</span>
+        </div>
       </div>
-    </div>
-  </section>
-</div>
+    </section>
 
-<!-- ===== 設定 ===== -->
-<div id="settings" class="card" style="display:none;position:fixed;top:70px;right:20px;width:min(460px,92vw);z-index:6;box-shadow:0 10px 40px rgba(0,0,0,.15);">
-  <h2>設定</h2>
-  <label>アクセスキー <small>薫さんから受け取った「ghp_…」または「github_pat_…」で始まる文字列</small></label>
-  <input type="text" id="sToken" placeholder="貼り付けてください" autocomplete="off">
-  <p class="hint">このパソコンのブラウザにだけ保存されます。他の人には見せないでください。</p>
-  <div class="actions">
-    <button class="btn primary" id="btnTokenSave">保存</button>
-    <button class="btn ghost" id="btnTokenClose">閉じる</button>
+    <section class="panel" id="panel-account">
+      <div class="card">
+        <h2>パスワードの変更</h2>
+        <div class="msg" id="pwMsg"></div>
+        <label>現在のパスワード</label><input type="password" id="pCur" autocomplete="current-password">
+        <label>新しいパスワード <small>8文字以上・英字と数字を含む</small></label><input type="password" id="pNew" autocomplete="new-password">
+        <label>新しいパスワード（確認）</label><input type="password" id="pNew2" autocomplete="new-password">
+        <div class="actions"><button class="btn primary" id="btnPw">変更する</button></div>
+      </div>
+      <div class="card">
+        <h2>メールアドレスの変更</h2>
+        <p class="lead">新しいメールアドレスに認証コードを送り、確認できたら変更します。変更後は新しいアドレスでログインしてください。</p>
+        <div class="msg" id="emMsg"></div>
+        <div id="em-step1">
+          <label>新しいメールアドレス</label><input type="email" id="eNew" inputmode="email">
+          <label>パスワード（本人確認）</label><input type="password" id="ePass" autocomplete="current-password">
+          <div class="actions"><button class="btn primary" id="btnEmail">認証コードを送る</button></div>
+        </div>
+        <div id="em-step2" style="display:none">
+          <label>新しいメールアドレスに届いた認証コード</label><input type="text" class="code" id="eCode" inputmode="numeric" maxlength="6" placeholder="000000">
+          <div class="actions"><button class="btn primary" id="btnEmailConfirm">変更を確定する</button><button class="btn ghost" id="btnEmailBack">戻る</button></div>
+        </div>
+      </div>
+      <div class="card">
+        <h2>ログアウト</h2>
+        <p class="lead">共用のパソコンでは、作業が終わったらログアウトしてください。</p>
+        <div class="actions"><button class="btn ghost" id="btnLogout">ログアウト</button></div>
+      </div>
+    </section>
   </div>
 </div>
 <div id="busy">送信中です。そのままお待ちください…</div>
 
 <script>
-// ===== 設定 =====
-const OWNER = "fujimuraman", REPO = "prodesign-prototype", BRANCH = "main";
-const API = `https://api.github.com/repos/${OWNER}/${REPO}/contents/`;
 const CATS = ["お知らせ","実績","専門家支援","セミナー","メディア"];
 const $ = (id) => document.getElementById(id);
-const token = () => localStorage.getItem("pd_token") || "";
 const setMsg = (id, kind, text) => { const el = $(id); el.className = "msg " + (kind || ""); el.textContent = text || ""; };
 const busy = (on) => $("busy").classList.toggle("on", !!on);
-const enc = (s) => { const b = new TextEncoder().encode(s); let bin = ""; b.forEach(c => bin += String.fromCharCode(c)); return btoa(bin); };
-const dec = (b64) => { const bin = atob(b64.replace(/\n/g, "")); const a = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return new TextDecoder().decode(a); };
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let me = null, pendingEmail = "", pendingRemember = true;
 
-async function gh(path, opts = {}) {
-  if (!token()) throw new Error("アクセスキーが未設定です。右上の「設定」から登録してください。");
-  const r = await fetch(API + path + (opts.method ? "" : `?ref=${BRANCH}&t=${Date.now()}`), {
-    method: opts.method || "GET",
-    headers: { Authorization: "Bearer " + token(), Accept: "application/vnd.github+json", "Content-Type": "application/json" },
-    body: opts.body ? JSON.stringify(opts.body) : undefined,
-  });
-  if (r.status === 404 && !opts.method) return null;
-  if (!r.ok) {
-    const t = await r.text();
-    if (r.status === 401) throw new Error("アクセスキーが正しくありません（または期限切れ）。設定を確認してください。");
-    throw new Error(`通信エラー ${r.status}: ${t.slice(0, 200)}`);
-  }
-  return r.json();
+async function api(path, body, method) {
+  const r = await fetch("/api" + path, { method: method || (body ? "POST" : "GET"), headers: { "content-type": "application/json", "x-requested-with": "pd-admin" }, body: body ? JSON.stringify(body) : undefined, credentials: "same-origin" });
+  let j = null; try { j = await r.json(); } catch {}
+  if (r.status === 401 && j && j.auth === false) { showAuth("v-login"); throw new Error("ログインの有効期限が切れました。もう一度ログインしてください。"); }
+  if (!r.ok || !j || j.ok === false) throw new Error((j && j.error) || ("通信エラー " + r.status));
+  return j;
 }
-const getFile = async (path) => { const j = await gh(path); return j ? { sha: j.sha, text: dec(j.content) } : null; };
-const putFile = async (path, text, message, sha, isBinaryB64) => gh(path, { method: "PUT", body: { message, content: isBinaryB64 ? text : enc(text), branch: BRANCH, ...(sha ? { sha } : {}) } });
-const delFile = async (path, sha, message) => gh(path, { method: "DELETE", body: { message, sha, branch: BRANCH } });
+function devHint(j) { const b = $("devBox"); if (j && j.devCode) { b.style.display = "block"; b.textContent = "【開発モード】メールは送信されません。認証コード: " + j.devCode; } else { b.style.display = "none"; } }
 
-// ===== front matter =====
-function parseMd(text) {
-  const m = text.match(/^﻿?---\s*\n([\s\S]*?)\n---\s*\n?([\s\S]*)$/);
-  const meta = {}; let body = text;
-  if (m) { m[1].split("\n").forEach(l => { const i = l.indexOf(":"); if (i > 0) meta[l.slice(0, i).trim()] = l.slice(i + 1).trim(); }); body = m[2]; }
-  return { meta, body: body.replace(/\n+$/, "") };
+// ===== 画面切替 =====
+function showAuth(view) {
+  $("adminArea").style.display = "none"; $("authArea").style.display = "block"; $("who").innerHTML = "";
+  document.querySelectorAll("#authArea .card").forEach(c => c.style.display = c.id === view ? "block" : "none");
+  setMsg("authMsg");
+  if (view !== "v-code") devHint(null);
 }
-const toMd = (meta, body) => `---\ntitle: ${meta.title}\ndate: ${meta.date}\ncategory: ${meta.category}\n${meta.image ? "image: " + meta.image + "\n" : ""}---\n\n${body.trim()}\n`;
-const esc = (s) => s.replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-function mdPreview(md) {
-  return md.trim().split(/\n\s*\n/).map(p => {
-    const lines = p.trim().split("\n");
-    if (lines.every(l => /^\s*[-*・●]/.test(l))) return "<ul>" + lines.map(l => "<li>" + esc(l.replace(/^\s*[-*・●]\s*/, "")) + "</li>").join("") + "</ul>";
-    if (/^!\[.*?\]\((.*?)\)/.test(lines[0])) return lines[0].replace(/^!\[.*?\]\((.*?)\)/, '<img src="$1">');
-    return "<p>" + lines.map(esc).join("<br>") + "</p>";
-  }).join("");
+function showAdmin() {
+  $("authArea").style.display = "none"; $("adminArea").style.display = "block";
+  $("who").innerHTML = `<span>${esc(me.email)}</span><button class="btn ghost sm" id="btnLogout2">ログアウト</button>`;
+  $("btnLogout2").onclick = logout;
+  showTab("news");
 }
-const slugify = (date, title) => {
-  const d = date.replace(/\./g, "-");
-  const s = title.replace(/[^\w぀-ヿ一-鿿]+/g, "").slice(0, 12);
-  return `${d}-${Date.now().toString(36)}`;
-};
-
-// ===== タブ =====
+document.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => showAuth(b.dataset.go)));
 document.querySelectorAll(".tab").forEach(b => b.addEventListener("click", () => showTab(b.dataset.tab)));
 function showTab(name) {
   document.querySelectorAll(".tab").forEach(b => b.classList.toggle("on", b.dataset.tab === name));
@@ -208,119 +250,165 @@ function showTab(name) {
   if (name === "edit" && !$("editSlug").value) resetForm();
 }
 
-// ===== 設定 =====
-$("btnSettings").onclick = () => { $("sToken").value = token(); $("settings").style.display = "block"; };
-$("btnTokenClose").onclick = () => $("settings").style.display = "none";
-$("btnTokenSave").onclick = () => {
-  const v = $("sToken").value.trim();
-  if (!v) return alert("アクセスキーを入力してください");
-  localStorage.setItem("pd_token", v); $("settings").style.display = "none"; $("setupMsg").style.display = "none"; loadNews();
+// ===== 認証 =====
+async function boot() {
+  try {
+    const j = await api("/auth/me");
+    if (j.user) { me = j.user; showAdmin(); }
+    else { showAuth("v-login"); if (!j.hasAdmin) { setMsg("authMsg", "info", "まだ管理者が登録されていません。「はじめての方（新規登録）」から登録してください。"); } }
+  } catch (e) { showAuth("v-login"); setMsg("authMsg", "ng", e.message); }
+}
+$("btnLogin").onclick = async () => {
+  const email = $("lEmail").value.trim(), password = $("lPass").value;
+  if (!email || !password) return setMsg("authMsg", "ng", "メールアドレスとパスワードを入力してください");
+  busy(true); setMsg("authMsg");
+  try {
+    const j = await api("/auth/login", { email, password });
+    if (j.user) { me = j.user; showAdmin(); return; }
+    pendingEmail = email; pendingRemember = $("lRemember").checked; $("cCode").value = "";
+    $("codeLead").textContent = `${email} に届いた6桁の認証コードを入力してください（有効期限10分）。`;
+    showAuth("v-code"); devHint(j); $("cCode").focus();
+    $("btnCode").onclick = verifyLogin;
+  } catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); }
 };
-if (token()) $("setupMsg").style.display = "none";
+async function verifyLogin() {
+  busy(true); setMsg("authMsg");
+  try { const j = await api("/auth/login/verify", { email: pendingEmail, code: $("cCode").value.trim(), remember: pendingRemember }); me = j.user; showAdmin(); }
+  catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); }
+}
+$("btnRegister").onclick = async () => {
+  const email = $("rEmail").value.trim(), password = $("rPass").value;
+  if (password !== $("rPass2").value) return setMsg("authMsg", "ng", "確認用のパスワードが一致しません");
+  busy(true); setMsg("authMsg");
+  try {
+    const j = await api("/auth/register", { email, password });
+    pendingEmail = email; $("cCode").value = "";
+    $("codeLead").textContent = `${email} に届いた6桁の認証コードを入力すると登録が完了します。`;
+    showAuth("v-code"); devHint(j); $("cCode").focus();
+    $("btnCode").onclick = async () => { busy(true); setMsg("authMsg"); try { const r = await api("/auth/register/confirm", { email: pendingEmail, code: $("cCode").value.trim() }); me = r.user; showAdmin(); } catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); } };
+  } catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); }
+};
+$("btnForgot").onclick = async () => {
+  const email = $("fEmail").value.trim(); if (!email) return setMsg("authMsg", "ng", "メールアドレスを入力してください");
+  busy(true); setMsg("authMsg");
+  try { const j = await api("/auth/forgot", { email }); pendingEmail = email; showAuth("v-reset"); devHint(j); setMsg("authMsg", "info", `${email} が登録されていれば、認証コードを送りました。届いたコードと新しいパスワードを入力してください。`); }
+  catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); }
+};
+$("btnReset").onclick = async () => {
+  if ($("sPass").value !== $("sPass2").value) return setMsg("authMsg", "ng", "確認用のパスワードが一致しません");
+  busy(true); setMsg("authMsg");
+  try { await api("/auth/reset", { email: pendingEmail, code: $("sCode").value.trim(), password: $("sPass").value }); showAuth("v-login"); $("lEmail").value = pendingEmail; setMsg("authMsg", "ok", "パスワードを再設定しました。新しいパスワードでログインしてください。"); }
+  catch (e) { setMsg("authMsg", "ng", e.message); } finally { busy(false); }
+};
+async function logout() { busy(true); try { await api("/auth/logout", {}); } catch {} finally { busy(false); me = null; showAuth("v-login"); } }
+$("btnLogout").onclick = logout;
+$("btnPw").onclick = async () => {
+  if ($("pNew").value !== $("pNew2").value) return setMsg("pwMsg", "ng", "確認用のパスワードが一致しません");
+  busy(true); setMsg("pwMsg");
+  try { await api("/auth/change-password", { current: $("pCur").value, password: $("pNew").value }); ["pCur","pNew","pNew2"].forEach(i => $(i).value = ""); setMsg("pwMsg", "ok", "パスワードを変更しました。"); }
+  catch (e) { setMsg("pwMsg", "ng", e.message); } finally { busy(false); }
+};
+$("btnEmail").onclick = async () => {
+  busy(true); setMsg("emMsg");
+  try { const j = await api("/auth/change-email", { newEmail: $("eNew").value.trim(), password: $("ePass").value }); $("em-step1").style.display = "none"; $("em-step2").style.display = "block"; setMsg("emMsg", "info", `${$("eNew").value.trim()} に認証コードを送りました。` + (j.devCode ? `\n【開発モード】コード: ${j.devCode}` : "")); }
+  catch (e) { setMsg("emMsg", "ng", e.message); } finally { busy(false); }
+};
+$("btnEmailBack").onclick = () => { $("em-step1").style.display = "block"; $("em-step2").style.display = "none"; setMsg("emMsg"); };
+$("btnEmailConfirm").onclick = async () => {
+  busy(true); setMsg("emMsg");
+  try { const j = await api("/auth/change-email/confirm", { code: $("eCode").value.trim() }); me = j.user; $("who").querySelector("span").textContent = me.email; $("em-step1").style.display = "block"; $("em-step2").style.display = "none"; $("eNew").value = ""; $("ePass").value = ""; $("eCode").value = ""; setMsg("emMsg", "ok", `メールアドレスを ${me.email} に変更しました。次回からこのアドレスでログインしてください。`); }
+  catch (e) { setMsg("emMsg", "ng", e.message); } finally { busy(false); }
+};
+["cCode","sCode","eCode"].forEach(id => $(id).addEventListener("input", () => { $(id).value = $(id).value.replace(/\D/g, "").slice(0, 6); }));
+$("cCode").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnCode").click(); });
+$("lPass").addEventListener("keydown", (e) => { if (e.key === "Enter") $("btnLogin").click(); });
 
-// ===== ニュース一覧 =====
+// ===== ニュース =====
 let posts = [];
 async function loadNews() {
   try {
     setMsg("newsMsg");
-    const list = await gh("news");
-    const mds = (list || []).filter(f => f.name.endsWith(".md") && !/^readme/i.test(f.name));
-    posts = await Promise.all(mds.map(async f => { const j = await getFile("news/" + f.name); const { meta, body } = parseMd(j.text); return { name: f.name, slug: f.name.replace(/\.md$/, ""), sha: j.sha, meta, body }; }));
-    posts.sort((a, b) => (b.meta.date || "").localeCompare(a.meta.date || "") || b.slug.localeCompare(a.slug));
+    const j = await api("/posts?t=" + Date.now()); posts = j.posts;
     $("newsCount").textContent = `全 ${posts.length} 件`;
-    $("newsList").innerHTML = posts.map((p, i) => `<div class="item"><span class="d">${esc(p.meta.date || "")}</span><span class="c">${esc(p.meta.category || "")}</span><span class="t">${esc(p.meta.title || p.slug)}</span><span class="b"><button class="btn ghost" data-edit="${i}">編集</button><a class="btn ghost" style="text-decoration:none" target="_blank" href="post-${p.slug}.html">表示</a></span></div>`).join("") || "<p class='hint' style='padding:16px 0'>記事はまだありません</p>";
+    $("newsList").innerHTML = posts.map((p, i) => `<div class="item"><span class="d">${esc(p.date)}</span><span class="c">${esc(p.category)}</span><span class="t">${esc(p.title)}</span><span class="b"><button class="btn ghost sm" data-edit="${i}">編集</button><a class="btn ghost sm" target="_blank" href="/post/${esc(p.slug)}">表示</a></span></div>`).join("") || "<p class='hint' style='padding:16px 0'>記事はまだありません</p>";
     document.querySelectorAll("[data-edit]").forEach(b => b.onclick = () => editPost(posts[+b.dataset.edit]));
   } catch (e) { setMsg("newsMsg", "ng", e.message); $("newsList").innerHTML = ""; }
 }
-
-// ===== 記事フォーム =====
-let imageB64 = null;
 function resetForm() {
   $("editTitle").textContent = "新しい記事を書く"; $("editSlug").value = ""; $("fTitle").value = ""; $("fCat").value = "お知らせ";
-  $("fDate").value = new Date().toISOString().slice(0, 10); $("fBody").value = ""; $("fImage").value = ""; $("fImageName").value = ""; imageB64 = null;
-  $("fImageThumb").style.display = "none"; $("btnDelete").style.display = "none"; setMsg("editMsg"); renderPreview();
+  $("fDate").value = new Date().toISOString().slice(0, 10); $("fBody").value = ""; $("fImage").value = ""; $("fImageUrl").value = "";
+  $("fImageThumb").style.display = "none"; $("btnImageClear").style.display = "none"; $("btnDelete").style.display = "none"; setMsg("editMsg"); renderPreview();
 }
 function editPost(p) {
   resetForm();
-  $("editTitle").textContent = "記事を編集"; $("editSlug").value = p.slug; $("fTitle").value = p.meta.title || "";
-  $("fDate").value = (p.meta.date || "").replace(/\./g, "-"); $("fCat").value = CATS.includes(p.meta.category) ? p.meta.category : "お知らせ";
-  $("fBody").value = p.body; $("fImageName").value = p.meta.image || "";
-  if (p.meta.image) { $("fImageThumb").src = (p.meta.image.startsWith("images/") ? "" : "images/news/") + p.meta.image; $("fImageThumb").style.display = "block"; }
+  $("editTitle").textContent = "記事を編集"; $("editSlug").value = p.slug; $("fTitle").value = p.title;
+  $("fDate").value = p.date.replace(/\./g, "-"); $("fCat").value = CATS.includes(p.category) ? p.category : "お知らせ";
+  $("fBody").value = p.body; $("fImageUrl").value = p.image || "";
+  if (p.image) { $("fImageThumb").src = p.image; $("fImageThumb").style.display = "block"; $("btnImageClear").style.display = "inline-block"; }
   $("btnDelete").style.display = "inline-block"; showTab("edit"); renderPreview();
+}
+function mdPreview(md) {
+  return md.trim().split(/\n\s*\n/).map(p => {
+    const lines = p.trim().split("\n"); if (!lines[0]) return "";
+    if (lines.every(l => /^\s*[-*・●]/.test(l))) return "<ul>" + lines.map(l => "<li>" + esc(l.replace(/^\s*[-*・●]\s*/, "")) + "</li>").join("") + "</ul>";
+    if (/^!\[.*?\]\((.*?)\)/.test(lines[0])) return lines[0].replace(/^!\[.*?\]\((.*?)\)/, '<img src="$1">');
+    return "<p>" + lines.map(esc).join("<br>") + "</p>";
+  }).join("");
 }
 function renderPreview() {
   const t = $("fTitle").value, d = $("fDate").value.replace(/-/g, "."), c = $("fCat").value;
   $("fPreview").innerHTML = `<div class="hint">${esc(d)}　${esc(c)}</div><h3 style="margin:6px 0 12px">${esc(t) || "（タイトル）"}</h3>` + ($("fImageThumb").style.display !== "none" ? `<img src="${$("fImageThumb").src}">` : "") + mdPreview($("fBody").value);
 }
 ["fTitle", "fDate", "fCat", "fBody"].forEach(id => $(id).addEventListener("input", renderPreview));
-$("fImage").addEventListener("change", () => {
+$("fImage").addEventListener("change", async () => {
   const f = $("fImage").files[0]; if (!f) return;
   if (f.size > 4 * 1024 * 1024) { alert("写真が大きすぎます（4MBまで）。スマホの写真は「小」サイズで送るか、縮小してください。"); $("fImage").value = ""; return; }
-  const r = new FileReader();
-  r.onload = () => { imageB64 = r.result.split(",")[1]; const ext = (f.name.split(".").pop() || "jpg").toLowerCase().replace("jpeg", "jpg"); $("fImageName").value = `${$("fDate").value || "img"}-${Date.now().toString(36)}.${ext}`; $("fImageThumb").src = r.result; $("fImageThumb").style.display = "block"; renderPreview(); };
-  r.readAsDataURL(f);
+  busy(true); setMsg("editMsg");
+  try {
+    const r = await fetch("/api/upload", { method: "POST", headers: { "content-type": f.type, "x-requested-with": "pd-admin" }, body: f, credentials: "same-origin" });
+    const j = await r.json(); if (!r.ok || !j.ok) throw new Error(j.error || "アップロードに失敗しました");
+    $("fImageUrl").value = j.url; $("fImageThumb").src = j.url; $("fImageThumb").style.display = "block"; $("btnImageClear").style.display = "inline-block"; renderPreview();
+  } catch (e) { setMsg("editMsg", "ng", e.message); $("fImage").value = ""; } finally { busy(false); }
 });
+$("btnImageClear").onclick = () => { $("fImage").value = ""; $("fImageUrl").value = ""; $("fImageThumb").style.display = "none"; $("btnImageClear").style.display = "none"; renderPreview(); };
 $("btnNew").onclick = resetForm;
 $("btnSave").onclick = async () => {
-  const title = $("fTitle").value.trim(), date = $("fDate").value.replace(/-/g, "."), cat = $("fCat").value, body = $("fBody").value;
+  const title = $("fTitle").value.trim(), date = $("fDate").value, category = $("fCat").value, body = $("fBody").value;
   if (!title) return alert("タイトルを入力してください"); if (!date) return alert("日付を入力してください"); if (!body.trim()) return alert("本文を入力してください");
   busy(true); setMsg("editMsg");
   try {
-    let slug = $("editSlug").value || slugify(date, title);
-    let imgName = $("fImageName").value;
-    if (imageB64) { await putFile("images/news/" + imgName, imageB64, `NEWS: 写真を追加 ${imgName}`, null, true); imageB64 = null; }
-    const path = "news/" + slug + ".md";
-    const cur = $("editSlug").value ? await getFile(path) : null;
-    await putFile(path, toMd({ title, date, category: cat, image: imgName }, body), ($("editSlug").value ? "NEWS: 記事を更新 " : "NEWS: 記事を追加 ") + title, cur && cur.sha);
-    $("editSlug").value = slug; $("btnDelete").style.display = "inline-block"; $("editTitle").textContent = "記事を編集";
-    setMsg("editMsg", "ok", "送信しました。サイトへの反映まで2〜3分かかります（自動で作り直しています）。\n反映後: " + location.origin + location.pathname.replace(/admin\.html$/, "") + "post-" + slug + ".html");
+    const j = await api("/posts", { slug: $("editSlug").value, title, date, category, image: $("fImageUrl").value, body });
+    $("editSlug").value = j.slug; $("btnDelete").style.display = "inline-block"; $("editTitle").textContent = "記事を編集";
+    setMsg("editMsg", "ok", "公開しました。記事ページ: " + location.origin + "/post/" + j.slug);
   } catch (e) { setMsg("editMsg", "ng", e.message); } finally { busy(false); }
 };
 $("btnDelete").onclick = async () => {
   const slug = $("editSlug").value; if (!slug) return;
   if (!confirm("この記事を削除します。よろしいですか？")) return;
   busy(true);
-  try {
-    const path = "news/" + slug + ".md"; const cur = await getFile(path);
-    if (cur) {
-      const img = (parseMd(cur.text).meta.image || "").trim();
-      if (img && !img.startsWith("http")) { const ip = img.startsWith("images/") ? img : "images/news/" + img; const ij = await getFile(ip); if (ij) await delFile(ip, ij.sha, "NEWS: 写真を削除 " + img); }
-      await delFile(path, cur.sha, "NEWS: 記事を削除 " + slug);
-    }
-    const gen = await getFile("post-" + slug + ".html"); if (gen) await delFile("post-" + slug + ".html", gen.sha, "NEWS: 生成ページを削除 " + slug);
-    resetForm(); setMsg("editMsg", "ok", "削除しました。サイトへの反映まで2〜3分かかります。"); showTab("news");
-  } catch (e) { setMsg("editMsg", "ng", e.message); } finally { busy(false); }
+  try { await api("/posts/" + encodeURIComponent(slug), null, "DELETE"); resetForm(); showTab("news"); setMsg("newsMsg", "ok", "記事を削除しました。"); }
+  catch (e) { setMsg("editMsg", "ng", e.message); } finally { busy(false); }
 };
 
 // ===== 沿革・事業実績 =====
-let histSha = null;
 async function loadHistory() {
-  try {
-    setMsg("histMsg");
-    const j = await getFile("data/history.json"); histSha = j ? j.sha : null;
-    const rows = j ? JSON.parse(j.text) : [];
-    renderHist(rows);
-  } catch (e) { setMsg("histMsg", "ng", e.message); }
+  try { setMsg("histMsg"); const j = await api("/history?t=" + Date.now()); renderHist(j.history); }
+  catch (e) { setMsg("histMsg", "ng", e.message); }
 }
 function renderHist(rows) {
-  $("histRows").innerHTML = rows.map((r, i) => `<div class="hist"><input type="text" value="${esc(r.year || "")}" data-k="year" placeholder="2026.09"><input type="text" value="${esc(r.wareki || "")}" data-k="wareki" placeholder="令和8年"><input type="text" value="${esc(r.text || "")}" data-k="text" placeholder="内容"><button class="btn danger" style="padding:8px 12px;font-size:13px" data-del="${i}">削除</button></div>`).join("");
+  $("histRows").innerHTML = rows.map((r, i) => `<div class="hist"><input type="text" value="${esc(r.year || "")}" data-k="year" placeholder="2026.09"><input type="text" value="${esc(r.wareki || "")}" data-k="wareki" placeholder="令和8年"><input type="text" value="${esc(r.text || "")}" data-k="text" placeholder="内容"><button class="btn danger sm" data-del="${i}">削除</button></div>`).join("");
   document.querySelectorAll("[data-del]").forEach(b => b.onclick = () => { const rs = readHist(); rs.splice(+b.dataset.del, 1); renderHist(rs); });
 }
 const readHist = () => [...document.querySelectorAll("#histRows .hist")].map(d => ({ year: d.querySelector("[data-k=year]").value.trim(), wareki: d.querySelector("[data-k=wareki]").value.trim(), text: d.querySelector("[data-k=text]").value.trim() }));
 $("btnHistAdd").onclick = () => { const rs = readHist(); rs.push({ year: String(new Date().getFullYear()), wareki: "", text: "" }); renderHist(rs); window.scrollTo(0, document.body.scrollHeight); };
 $("btnHistSave").onclick = async () => {
-  const rows = readHist().filter(r => r.year || r.text);
   busy(true); setMsg("histMsg");
-  try {
-    const cur = await getFile("data/history.json");
-    await putFile("data/history.json", JSON.stringify(rows, null, 1) + "\n", "沿革・事業実績を更新", cur && cur.sha);
-    setMsg("histMsg", "ok", "送信しました。企業情報ページへの反映まで2〜3分かかります。"); histSha = null;
-  } catch (e) { setMsg("histMsg", "ng", e.message); } finally { busy(false); }
+  try { await api("/history", { history: readHist() }, "PUT"); setMsg("histMsg", "ok", "公開しました。企業情報ページに反映されています。"); }
+  catch (e) { setMsg("histMsg", "ng", e.message); } finally { busy(false); }
 };
 
-// 初期化
 resetForm();
-if (token()) loadNews(); else $("newsList").innerHTML = "";
+boot();
 </script>
 </body>
 </html>

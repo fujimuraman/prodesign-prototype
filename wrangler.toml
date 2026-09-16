@@ -1,0 +1,20 @@
+name = "prodesign"
+compatibility_date = "2026-09-01"
+pages_build_output_dir = "."
+
+[vars]
+SITE_NAME = "株式会社プロデザイン"
+# 登録を許可する管理者メール（カンマ区切り）。ここに無いアドレスは登録できない
+ALLOWED_EMAILS = "his-fujiwara@prodesign.co.jp,fujimuraman@gmail.com"
+FROM_EMAIL = "ProDesign 更新ページ <noreply@garujp.com>"
+# 開発時のみ "1"（メールを送らず、認証コードをAPI応答に含める）。本番では必ず空にする
+DEV_MAIL = ""
+
+[[d1_databases]]
+binding = "DB"
+database_name = "prodesign"
+database_id = "REPLACE_WITH_D1_ID"
+
+[[kv_namespaces]]
+binding = "IMG"
+id = "REPLACE_WITH_KV_ID"

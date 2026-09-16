@@ -1,2 +1,6 @@
 _*.py
 _*.json
+.wrangler/
+.dev.vars
+migrate.sql
+node_modules/

@@ -69,10 +69,19 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
   });
 });
 
-// ===== Hamburger (placeholder for mobile menu) =====
+// ===== Hamburger / mobile menu =====
 const hamburger = document.getElementById('hamburger');
-if (hamburger) {
-  hamburger.addEventListener('click', () => {
-    alert('モバイルメニューは次フェーズで実装予定です。');
-  });
+const nav = document.querySelector('.nav');
+if (hamburger && nav) {
+  const setOpen = (open) => {
+    nav.classList.toggle('is-open', open);
+    hamburger.classList.toggle('is-open', open);
+    hamburger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    document.body.classList.toggle('menu-open', open);
+  };
+  hamburger.setAttribute('aria-expanded', 'false');
+  hamburger.addEventListener('click', () => setOpen(!nav.classList.contains('is-open')));
+  nav.querySelectorAll('a').forEach(a => a.addEventListener('click', () => setOpen(false)));
+  window.addEventListener('resize', () => { if (window.innerWidth > 768) setOpen(false); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
 }

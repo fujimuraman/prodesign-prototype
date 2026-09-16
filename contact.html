@@ -69,7 +69,8 @@
       </aside>
 
       <!-- Right: Form -->
-      <form class="contact-form" onsubmit="event.preventDefault(); alert('お問い合わせ機能はWordPress連携時に有効化されます。');">
+      <form class="contact-form" id="contactForm">
+        <p class="contact-form__note">「送信する」を押すと、ご入力内容が入った状態でお使いのメールソフトが開きます。そのまま送信してください。メールソフトが開かない場合は、お手数ですが <a href="mailto:info@prodesign.co.jp">info@prodesign.co.jp</a> へ直接お送りください。</p>
         <div class="form-row">
           <label for="name">お名前 / NAME *</label>
           <input type="text" id="name" name="name" required>
@@ -102,6 +103,19 @@
         </div>
         <button type="submit" class="contact-form__submit">送信する <span class="arrow">→</span></button>
       </form>
+      <script>
+      document.getElementById('contactForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const v = (id) => (document.getElementById(id).value || '').trim();
+        const subj = document.getElementById('subject');
+        const subjText = subj.options[subj.selectedIndex] ? subj.options[subj.selectedIndex].text : '';
+        const body = [
+          'お名前: ' + v('name'), '会社名: ' + v('company'), 'メールアドレス: ' + v('email'), '電話番号: ' + v('phone'),
+          'お問い合わせ種別: ' + subjText, '', 'お問い合わせ内容:', v('message'), '', '（プロデザイン公式サイトのお問い合わせフォームより）'
+        ].join('\n');
+        location.href = 'mailto:info@prodesign.co.jp?subject=' + encodeURIComponent('【お問い合わせ】' + subjText + ' / ' + v('name')) + '&body=' + encodeURIComponent(body);
+      });
+      </script>
     </div>
   </div>
 </main>
@@ -126,8 +140,9 @@
       <div class="footer__nav">
         <p class="footer__nav-title">RELATED</p>
         <ul>
-          <li><a href="#">あきた企業活性化センター</a></li>
-          <li><a href="#">秋田県工業連合会</a></li>
+          <li><a href="https://www.smrj.go.jp/" target="_blank" rel="noopener">中小機構</a></li>
+          <li><a href="https://www.bic-akita.or.jp/" target="_blank" rel="noopener">あきた企業活性化センター</a></li>
+          <li><a href="https://www.bic-akita.or.jp/support/consultation.html" target="_blank" rel="noopener">秋田県よろず支援拠点</a></li>
         </ul>
       </div>
     </div>

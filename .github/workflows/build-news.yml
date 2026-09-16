@@ -7,6 +7,7 @@ on:
     branches: [main]
     paths:
       - "news/**"
+      - "data/**"
       - "images/news/**"
       - "templates/**"
       - "build_news.py"
@@ -29,7 +30,7 @@ jobs:
         run: |
           git config user.name "news-bot"
           git config user.email "news-bot@users.noreply.github.com"
-          git add news.html post-*.html index.html
+          git add news.html post-*.html index.html company.html
           if git diff --cached --quiet; then
             echo "no changes"
           else

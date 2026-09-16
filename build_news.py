@@ -141,7 +141,23 @@ def main():
     if new_s != s:
         idx.write_text(new_s, encoding="utf-8")
 
-    # 古い post-XXX.html（md に対応しないもの）は残す（外部リンク保護）
+    # 沿革・事業実績（data/history.json → company.html の HISTORY マーカー間）
+    hist_path = ROOT / "data" / "history.json"
+    if hist_path.exists():
+        import json
+        rows = json.loads(hist_path.read_text(encoding="utf-8"))
+        rows.sort(key=lambda r: str(r.get("year", "")))
+        hist_html = '      <div class="history">\n' + "".join(
+            f'        <div class="history__item"><div class="history__year">{html.escape(str(r.get("year","")))}'
+            f'<small>{html.escape(str(r.get("wareki","")))}</small></div>'
+            f'<div class="history__body">{html.escape(str(r.get("text","")))}</div></div>\n' for r in rows) + "      </div>\n"
+        cp = ROOT / "company.html"
+        c = cp.read_text(encoding="utf-8")
+        c2 = re.sub(r"(<!-- HISTORY:START[^\n]*-->\n).*?(      <!-- HISTORY:END -->)", lambda m: m.group(1) + hist_html + m.group(2), c, count=1, flags=re.S)
+        if c2 != c:
+            cp.write_text(c2, encoding="utf-8")
+        print(f"OK: 事業実績 {len(rows)} 行 → company.html")
+
     print(f"OK: {len(posts)} 記事 → news.html / post-*.html / index.html")
 
 

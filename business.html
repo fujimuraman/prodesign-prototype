@@ -18,11 +18,11 @@
     <nav class="nav">
       <ul class="nav__list">
         <li class="nav__item"><a href="index.html">HOME</a></li>
-        <li class="nav__item"><a href="business.html">BUSINESS</a></li>
-        <li class="nav__item"><a href="works.html">WORKS</a></li>
-        <li class="nav__item"><a href="company.html">COMPANY</a></li>
+        <li class="nav__item"><a href="business.html">事業内容</a></li>
+        <li class="nav__item"><a href="works.html">施工実績</a></li>
+        <li class="nav__item"><a href="company.html">企業情報</a></li>
         <li class="nav__item"><a href="news.html">NEWS</a></li>
-        <li class="nav__item nav__item--cta"><a href="contact.html">CONTACT</a></li>
+        <li class="nav__item nav__item--cta"><a href="contact.html">お問い合わせ</a></li>
       </ul>
     </nav>
     <button class="hamburger" aria-label="メニュー" id="hamburger"><span></span><span></span><span></span></button>
@@ -40,10 +40,16 @@
   <div class="container">
     <p class="section__lead" style="margin-bottom:0;">
       自動機・治具の設計製作から、機械設計のアウトソーシング、<br>
-      経営コンサルティングまで。ものづくり企業の「設計力」を、私たちが支えます。
+      経営コンサルティングまで。ものづくり企業の「土台作り」を、私たちが支えます。
     </p>
 
-    <div class="biz-block">
+    <nav class="biz-nav" aria-label="事業内容">
+      <a href="#design" class="biz-nav__link"><span class="biz-nav__num">01</span>機械設計</a>
+      <a href="#manufacturing" class="biz-nav__link"><span class="biz-nav__num">02</span>機械設計・製造</a>
+      <a href="#consulting" class="biz-nav__link"><span class="biz-nav__num">03</span>専門家支援・セミナー</a>
+    </nav>
+
+    <div class="biz-block" id="design">
       <div class="biz-block__img" style="background-image:url('images/slide01.jpg');"></div>
       <div class="biz-block__body">
         <div class="biz-block__num">01</div>
@@ -53,23 +59,23 @@
         <dl class="biz-block__specs">
           <div>
             <span class="biz-spec__label">FEE</span>
-            <span class="biz-spec__value">¥3,000 / 時間</span>
+            <span class="biz-spec__value">¥3,800 / 時間</span>
           </div>
           <div>
             <span class="biz-spec__label">LEAD TIME</span>
-            <span class="biz-spec__value">約1週間〜</span>
+            <span class="biz-spec__value">ご要望納期に合せて</span>
           </div>
         </dl>
       </div>
     </div>
 
-    <div class="biz-block">
+    <div class="biz-block" id="manufacturing">
       <div class="biz-block__img" style="background-image:url('images/slide02.jpg');"></div>
       <div class="biz-block__body">
         <div class="biz-block__num">02</div>
         <p class="biz-block__tag">DESIGN &amp; MANUFACTURING</p>
         <h2 class="biz-block__title">機械設計・製造</h2>
-        <p class="biz-block__desc">設計から製造、組立、現地調整までを一貫対応する完全オリジナルファシリティー。「設計者不在」「外注すると高コスト」といった課題を、30年超の実務経験と独自ノウハウで解決します。お客様のアイデアを、機能する機械製品へ。実装後の量産トラブル対応までワンストップで支援します。</p>
+        <p class="biz-block__desc">設計から製造、組立、現地調整まで、御社だけの完全オーダーメイド自動機をワンストップで提供。お客様の生産ラインに最適化した装置を造り上げます。「こんな特別オーダーの省力化機、設計製造してくれるところないよな」をお任せください。お客様のアイデアを、機能する自動機として実現します。</p>
         <dl class="biz-block__specs">
           <div>
             <span class="biz-spec__label">SCOPE</span>
@@ -83,7 +89,7 @@
       </div>
     </div>
 
-    <div class="biz-block">
+    <div class="biz-block" id="consulting">
       <div class="biz-block__img" style="background-image:url('images/slide03.jpg');"></div>
       <div class="biz-block__body">
         <div class="biz-block__num">03</div>

@@ -187,6 +187,10 @@ ul { list-style: none; }
   animation: fadeUp 1.4s ease-out 0.5s both;
 }
 .hero__title-line:nth-child(2) { animation-delay: 0.7s; }
+.hero__title-line:nth-child(3) { animation-delay: 0.9s; }
+.hero__title-line:nth-child(4) { animation-delay: 1.1s; }
+/* 4行の長いキャッチコピー用 */
+.hero__title--long { font-size: clamp(24px, 3.4vw, 44px); line-height: 1.55; letter-spacing: 0.03em; }
 .hero__desc {
   font-size: 16px;
   font-weight: 300;
@@ -1112,3 +1116,48 @@ main.page-main { padding: 140px 0; }
   .history__item { grid-template-columns: 1fr; gap: 8px; }
   .message { padding: 60px 32px; }
 }
+
+
+/* ===== 2026-09 追加: 事業内容ページ内ナビ / 実績年バッジ / 代表写真 / 経営理念 / 事業実績 ===== */
+.biz-nav {
+  display: flex; flex-wrap: wrap; gap: 12px;
+  margin-top: 48px;
+  border-top: 1px solid var(--c-line);
+  border-bottom: 1px solid var(--c-line);
+  padding: 18px 0;
+}
+.biz-nav__link {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 10px 22px;
+  font-size: 14px; letter-spacing: 0.06em;
+  color: var(--c-text); text-decoration: none;
+  border: 1px solid var(--c-line);
+  transition: all 0.3s var(--transition);
+}
+.biz-nav__link:hover { background: var(--c-bg-dark); color: #fff; border-color: var(--c-bg-dark); opacity: 1; }
+.biz-nav__num { font-family: var(--f-en); font-size: 11px; letter-spacing: 0.2em; color: var(--c-accent); }
+.biz-nav__link:hover .biz-nav__num { color: #d9c39a; }
+.biz-block[id] { scroll-margin-top: 110px; }
+
+.work-card__year {
+  font-style: normal; margin-left: 10px; padding: 2px 8px;
+  font-size: 10px; letter-spacing: 0.15em;
+  background: var(--c-accent); color: #fff;
+}
+
+.message--with-photo {
+  display: grid; grid-template-columns: 300px 1fr; gap: 56px; align-items: start;
+}
+.message__photo img { width: 100%; height: auto; display: block; }
+@media (max-width: 860px) {
+  .message--with-photo { grid-template-columns: 1fr; gap: 32px; }
+  .message__photo { max-width: 360px; }
+}
+
+.philosophy { margin-top: 48px; border-left: 2px solid var(--c-accent); padding-left: 32px; }
+.philosophy__lead { font-family: var(--f-serif); font-size: 22px; font-weight: 300; line-height: 1.8; margin-bottom: 20px; }
+.philosophy__body { font-size: 15px; font-weight: 300; line-height: 2.1; color: var(--c-text-soft); }
+
+.history__year small { display: block; font-family: var(--f-sans); font-size: 11px; letter-spacing: 0.08em; color: var(--c-text-mute); margin-top: 4px; }
+.history__note { margin-top: 32px; font-size: 14px; color: var(--c-text-soft); }
+.history__note a { color: var(--c-accent); }

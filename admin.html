@@ -282,7 +282,11 @@ $("btnDelete").onclick = async () => {
   busy(true);
   try {
     const path = "news/" + slug + ".md"; const cur = await getFile(path);
-    if (cur) await delFile(path, cur.sha, "NEWS: 記事を削除 " + slug);
+    if (cur) {
+      const img = (parseMd(cur.text).meta.image || "").trim();
+      if (img && !img.startsWith("http")) { const ip = img.startsWith("images/") ? img : "images/news/" + img; const ij = await getFile(ip); if (ij) await delFile(ip, ij.sha, "NEWS: 写真を削除 " + img); }
+      await delFile(path, cur.sha, "NEWS: 記事を削除 " + slug);
+    }
     const gen = await getFile("post-" + slug + ".html"); if (gen) await delFile("post-" + slug + ".html", gen.sha, "NEWS: 生成ページを削除 " + slug);
     resetForm(); setMsg("editMsg", "ok", "削除しました。サイトへの反映まで2〜3分かかります。"); showTab("news");
   } catch (e) { setMsg("editMsg", "ng", e.message); } finally { busy(false); }

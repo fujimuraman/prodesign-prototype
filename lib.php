@@ -2,6 +2,8 @@
 // 共通ライブラリ（PHP 8.x / SQLite / mail()）
 declare(strict_types=1);
 mb_internal_encoding('UTF-8');
+date_default_timezone_set('Asia/Tokyo');
+require_once __DIR__ . '/seo.php';
 
 function cfg(): array {
   static $c = null;
@@ -125,7 +127,7 @@ function code_mail(string $purposeLabel, string $code): array {
 // ---------- Markdown（簡易） ----------
 function inline_md(string $s): string {
   $s = h($s);
-  $s = preg_replace('/!\[(.*?)\]\((.*?)\)/u', '<img src="$2" alt="$1" loading="lazy">', $s);
+  $s = preg_replace('/!\[(.*?)\]\((.*?)\)/u', '<img src="$2" alt="$1" loading="lazy" decoding="async">', $s);
   $s = preg_replace('/\[(.*?)\]\((.*?)\)/u', '<a href="$2" target="_blank" rel="noopener">$1</a>', $s);
   $s = preg_replace('/\*\*(.+?)\*\*/u', '<strong>$1</strong>', $s);
   $s = preg_replace('/(?<!["\'=])(https?:\/\/[^\s<]+)/u', '<a href="$1" target="_blank" rel="noopener">$1</a>', $s);
@@ -152,12 +154,12 @@ function img_url(?string $image): string {
   if (str_starts_with($image, '/') || str_starts_with($image, 'http') || str_starts_with($image, 'images/')) return $image;
   return 'images/news/' . $image;
 }
-function all_posts(): array { return rows('SELECT slug,title,date,category,image,body,updated_at FROM posts ORDER BY date DESC, slug DESC'); }
+function all_posts(): array { return rows('SELECT slug,title,date,category,image,body,created_at,updated_at FROM posts ORDER BY date DESC, slug DESC'); }
 function news_card(array $p): string {
-  $img = $p['image'] ? '<div class="news-card__img" style="background-image:url(\'' . h(img_url($p['image'])) . '\');"></div>' : '<div class="news-card__img news-card__img--placeholder"></div>';
+  $img = $p['image'] ? '<div class="news-card__img" role="img" aria-label="' . h($p['title']) . '" style="background-image:url(\'' . h(img_url($p['image'])) . '\');"></div>' : '<div class="news-card__img news-card__img--placeholder"></div>';
   return '      <a href="/post/' . h($p['slug']) . '" class="news-card">' . "\n        $img\n" .
     '        <div class="news-card__body">' . "\n" . '          <div class="news-card__meta">' . "\n" .
-    '            <time class="news-card__date">' . h($p['date']) . '</time>' . "\n" . '            <span class="news-card__cat">' . h($p['category']) . '</span>' . "\n" . '          </div>' . "\n" .
-    '          <h3 class="news-card__title">' . h($p['title']) . '</h3>' . "\n" . '          <p class="news-card__desc">' . h(excerpt($p['body'])) . '</p>' . "\n" .
+    '            <time class="news-card__date" datetime="' . h(substr(post_date_iso($p), 0, 10)) . '">' . h($p['date']) . '</time>' . "\n" . '            <span class="news-card__cat">' . h($p['category']) . '</span>' . "\n" . '          </div>' . "\n" .
+    '          <h2 class="news-card__title">' . h($p['title']) . '</h2>' . "\n" . '          <p class="news-card__desc">' . h(excerpt($p['body'])) . '</p>' . "\n" .
     '          <span class="news-card__more">続きを読む <span class="arrow">→</span></span>' . "\n        </div>\n      </a>";
 }

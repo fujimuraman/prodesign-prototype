@@ -1,30 +1,72 @@
 # ProDesign 公式サイト（さくらのレンタルサーバー / Apache）
+# ここを変えたら _dev_router.php も同じ順番・同じ内容に揃え、tools/test_redirects.py で検証すること
 Options -Indexes
 AddDefaultCharset UTF-8
+
+# 404 は legacy.php が受ける（旧URLなら 301 転送、該当なしなら 404 ページを 404 ステータスで返す）
+ErrorDocument 404 /legacy.php
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
 
-  # 旧URL互換: /post-xxx.html → /post/xxx
+  # ---- 0) 正規ホストへ統一: http→https、www あり→なし（旧サイトと同じ正規形 https://prodesign.co.jp/）
+  #      さくらでは https のリクエストに X-Sakura-Forwarded-For が付く。どれか1つでも https の印があれば https とみなす
+  #      ※ 公開直後に「リダイレクトが繰り返されました」と出る場合は、下の「http→https」3行だけを # で止め、
+  #        さくらのコントロールパネル（ドメイン/SSL → 「HTTPSに転送する」）で設定する（SEO_SWITCH_CHECKLIST.md 参照）
+  RewriteCond %{HTTPS} =on [OR]
+  RewriteCond %{HTTP:X-Forwarded-Proto} =https [NC,OR]
+  RewriteCond %{HTTP:X-Sakura-Forwarded-For} !^$
+  RewriteRule ^ - [E=PD_HTTPS:1]
+
+  # www あり → なし
+  RewriteCond %{HTTP_HOST} ^www\.prodesign\.co\.jp$ [NC]
+  RewriteRule ^ https://prodesign.co.jp%{REQUEST_URI} [R=301,L]
+
+  # http → https
+  RewriteCond %{HTTP_HOST} ^prodesign\.co\.jp$ [NC]
+  RewriteCond %{ENV:PD_HTTPS} !=1
+  RewriteRule ^ https://prodesign.co.jp%{REQUEST_URI} [R=301,L]
+
+  # ---- 1) /index.html・/index.php → /（トップのURLを1つに）
+  RewriteCond %{THE_REQUEST} \s/+index\.(html|php)[\s?] [NC]
+  RewriteRule ^index\.(html|php)$ / [R=301,L,NC]
+
+  # ---- 2) 旧サイト（WordPress）のクエリ形式: /?p=878 /?page_id=16 /?cat=1 /?s=... /?feed=rss2 など → legacy.php が 301
+  RewriteCond %{QUERY_STRING} (^|&)(p|page_id|cat|s|m|author|feed|attachment_id|paged|tag|category_name)= [NC]
+  RewriteRule ^$ legacy.php [L]
+
+  # ---- 3) 試作時のURL: /post-xxx.html → /post/xxx
   RewriteRule ^post-([\w-]+)\.html$ /post/$1 [R=301,L]
 
-  # 記事ページ
-  RewriteRule ^post/([\w-]+)/?$ post.php?slug=$1 [L,QSA]
+  # ---- 4) 記事ページ（末尾スラッシュ付きは 9) で正規形へ 301）
+  RewriteRule ^post/([\w-]+)$ post.php?slug=$1 [L,QSA]
 
-  # API
+  # ---- 5) API
   RewriteRule ^api/(.*)$ api.php?r=$1 [L,QSA]
 
-  # DBの内容を差し込むページ
-  RewriteRule ^$ page.php?p=index [L]
-  RewriteRule ^(index|news|company)\.html$ page.php?p=$1 [L]
+  # ---- 6) サイトマップ・フィード
+  RewriteRule ^sitemap\.xml$ sitemap.php [L]
+  RewriteRule ^feed\.xml$ feed.php [L]
 
-  # 更新ページ（拡張子なしでもOK）
+  # ---- 7) 各ページ（page.php が head を本番用に差し替え、DBの内容を差し込む）
+  RewriteRule ^$ page.php?p=index [L]
+  RewriteRule ^(business|works|company|news|contact)\.html$ page.php?p=$1 [L]
+
+  # ---- 8) 更新ページ（拡張子なしでもOK）
   RewriteRule ^admin/?$ admin.html [L]
+
+  # ---- 9) 旧サイトの /news/ 以下・/post/ 以下（実在フォルダと名前が重なるので先に legacy.php へ）
+  RewriteRule ^(news|post)(/.*)?$ legacy.php [L]
+
+  # ---- 10) 実在しないパスはすべて legacy.php へ（旧URLの 301 転送。該当なしは 404 ページ）
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule ^ legacy.php [L]
 </IfModule>
 
-# 設定・スキーマ・データを直接見せない
-<FilesMatch "^(config\.php|lib\.php|schema\.sql|migrate\.sql|wrangler\.toml|NEWS_HOWTO\.md|.*\.md|.*\.py)$">
+# 設定・ライブラリ・スキーマ・データ・雛形を直接見せない
+<FilesMatch "^(config(\.local)?\.php|lib\.php|seo\.php|legacy_map\.php|schema\.sql|migrate\.sql|wrangler\.toml|notfound\.html|news_post\.html|.*\.md|.*\.py|.*\.sqlite|.*\.log)$">
   Require all denied
 </FilesMatch>
 
@@ -32,4 +74,42 @@ AddDefaultCharset UTF-8
   Header set X-Content-Type-Options "nosniff"
   Header set X-Frame-Options "SAMEORIGIN"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+  # 更新ページ・API・サイトマップ等は検索結果に出さない
+  <FilesMatch "^(admin\.html|api\.php|sitemap\.php|feed\.php)$">
+    Header set X-Robots-Tag "noindex"
+  </FilesMatch>
+</IfModule>
+
+# ---- 圧縮（転送量を減らして表示を速く）
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml application/rss+xml
+  AddOutputFilterByType DEFLATE application/javascript text/javascript application/json image/svg+xml
+</IfModule>
+
+# ---- ブラウザキャッシュ（CSS/JS は ?v= で版を付けているので長め、画像は1か月、HTML は短め）
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 hour"
+  ExpiresByType text/html "access plus 1 minute"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 month"
+  ExpiresByType image/vnd.microsoft.icon "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+  ExpiresByType application/xml "access plus 1 hour"
+  ExpiresByType application/rss+xml "access plus 1 hour"
+</IfModule>
+<IfModule mod_headers.c>
+  <FilesMatch "\.(css|js)$">
+    Header set Cache-Control "public, max-age=31536000"
+  </FilesMatch>
+  <FilesMatch "\.(jpe?g|png|gif|webp|svg|ico)$">
+    Header set Cache-Control "public, max-age=2592000"
+  </FilesMatch>
 </IfModule>

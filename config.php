@@ -2,6 +2,8 @@
 // ProDesign 更新ページ 設定（さくらのレンタルサーバー等、PHP 8.x + SQLite + mail() が使える環境向け）
 return [
   'site_name'      => '株式会社プロデザイン',
+  // 本番サイトのURL（canonical / OGP / sitemap / 構造化データに使う。プレビューでも常に本番URLを指す）
+  'site_url'       => 'https://prodesign.co.jp',
   // 登録を許可する管理者メール（ここに無いアドレスは登録できない）
   'allowed_emails' => ['his-fujiwara@prodesign.co.jp', 'fujimuraman@gmail.com'],
   // 認証メールの差出人（ドメインのメールアドレスにすると迷惑メール判定されにくい）

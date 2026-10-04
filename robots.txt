@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin
+Disallow: /api/
+Disallow: /tools/
+Disallow: /data/
+
+Sitemap: https://prodesign.co.jp/sitemap.xml

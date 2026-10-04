@@ -236,8 +236,20 @@ function seo_head(string $key, array $ctx = [], bool $preview = false): string {
   $o .= '<link rel="alternate" type="application/rss+xml" title="' . h($siteName) . ' ニュース" href="' . h($u . '/feed.xml') . '">' . "\n";
   $o .= '<link rel="preload" as="image" href="' . h($hero) . '"' . ($key === 'index' ? ' fetchpriority="high"' : '') . '>' . "\n";
   if ($graph) $o .= seo_jsonld($graph) . "\n";
+  if (!$preview) $o .= seo_ga4(); // アクセス解析は本番の公開ページだけ（プレビューの静的コピー・更新ページ・API には出さない）
   $o .= SEO_END;
   return $o;
+}
+
+/**
+ * Google アナリティクス 4 のタグ。config.php の ga4_id が空なら何も出さない。
+ * お問い合わせ送信・電話リンクのクリック計測は js/main.js（gtag がある時だけ動く）。
+ */
+function seo_ga4(): string {
+  $id = trim((string)(cfg()['ga4_id'] ?? ''));
+  if ($id === '' || !preg_match('/^G-[A-Z0-9]{4,20}$/', $id)) return '';
+  return '<script async src="https://www.googletagmanager.com/gtag/js?id=' . $id . '"></script>' . "\n"
+    . "<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','" . $id . "');</script>\n";
 }
 
 /** HTML の <head> にある SEO ブロック（または旧来の title＋description）を差し替える */

@@ -51,6 +51,8 @@ tools/import_seed.php  news/（初回移行用）  data_seed/history.json（初�
   なお WordPress はフォルダを移すと内部リンクが元のURL（`/company/` など）を指したままになります。それらは新サイトへ転送されるので、旧サイトは「トップと各ページを目で見て確認する用」と割り切ってください
 - **`news/` フォルダ**（初回移行用の md）は、移行が終わったら削除してください。残っていても `/news/` は新しいニュース一覧へ転送され、md は外から見えません
 - **sitemap / robots / RSS**: `https://prodesign.co.jp/sitemap.xml`（記事を足すと自動で増える）、`/robots.txt`、`/feed.xml`。Search Console への送信は `SEO_SWITCH_CHECKLIST.md`
+- **アクセス解析（Google アナリティクス 4）**: GA4 プロパティを作成 → 測定ID（`G-…`）を `config.php` の `'ga4_id'` に記入してアップロード → `python tools/check_seo.py https://prodesign.co.jp --ga4=G-…` で確認 → GA4 の「リアルタイム」に自分のアクセスが出ることを確認。空のままなら解析タグは出ません。公開ページ（404 含む）にだけ出て、`/admin`・API・プレビューには出ません。お問い合わせ送信（`contact_mailto`）と電話リンク（`tel_click`）のクリックも記録します。詳しくは `SEO_SWITCH_CHECKLIST.md` の 5
+- **CSS/JS を直した時**: 各 HTML と `templates/*.html` の `?v=20261004a` を新しい日付に揃えて上げ（ブラウザのキャッシュ対策）、`php tools/export_static.php` を実行
 - **画像を同じファイル名で差し替えた時**: ブラウザに最大1か月キャッシュされます。すぐ反映したい時はファイル名を変えるか、CSS/JS と同じく `?v=日付` を付けます
 - **title / description を直したい時**: `seo.php` の `seo_pages()` を編集（HTML の `<!-- SEO:START -->`〜`<!-- SEO:END -->` は自動生成なので直接は書かない）。編集後 `php tools/export_static.php` でプレビュー用の静的コピーも更新
 - **旧サイトで記事が増えた時**（差し替えまでに）: `news/` に md を足し、`legacy_map.php` の `posts` に `旧ID => '日付-旧ID'` を1行足す

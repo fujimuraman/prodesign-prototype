@@ -85,3 +85,20 @@ if (hamburger && nav) {
   window.addEventListener('resize', () => { if (window.innerWidth > 768) setOpen(false); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
 }
+
+// ===== アクセス解析（GA4）のイベント: 解析タグが出ている時（config.php の ga4_id 設定時）だけ動く。見た目は変えない =====
+if (typeof window.gtag === 'function') {
+  // お問い合わせフォーム（メールソフトを開く方式）の送信
+  const contactForm = document.getElementById('contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', () => {
+      const s = document.getElementById('subject');
+      window.gtag('event', 'contact_mailto', { inquiry_type: s && s.value ? s.value : '', transport_type: 'beacon' });
+    });
+  }
+  // 電話番号リンク（tel:）のクリック
+  document.addEventListener('click', (e) => {
+    const a = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
+    if (a) window.gtag('event', 'tel_click', { link_url: a.getAttribute('href'), transport_type: 'beacon' });
+  });
+}

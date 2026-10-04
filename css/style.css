@@ -1276,3 +1276,18 @@ main.page-main { padding: 140px 0; }
   /* CTAの背景写真（文字入り）が透けて読みづらいので暗めに */
   .cta { background-image: linear-gradient(180deg, rgba(15,17,18,0.94), rgba(15,17,18,0.97)), url('../images/slide03.jpg'); }
 }
+
+/* ===== 2026-10-04 スマホの横はみ出し修正（768px以下。PC幅には影響しない） =====
+   原因: 見出しの word-break:auto-phrase は文節の途中で折り返さないため、長い文節（例「秋田県食品加工機器関連企業ガイドブックに」）が
+   1行に収まらない幅でも折れず、グリッドの 1fr 列（最小幅＝中身の最小幅）が画面より広がっていた。
+   直し方: 列の最小幅を 0 にして画面幅に収め、収まらない文節だけ途中で折り返す。 */
+@media (max-width: 768px) {
+  .news-card { grid-template-columns: minmax(0, 1fr); }
+  .hero__title, .section__title, .cta__title, .page-hero__title, .message__title, .philosophy__lead,
+  .biz-block__title, .work-card__title, .news-card__title, .strength__title, .service__title, .recent-works__cap,
+  .news-card__desc, .news__link, .article__body { overflow-wrap: break-word; }
+}
+/* 事業内容「最近の納入実績」: 340px 以下では長い品名（完成モーター検査ライン）で2列が画面からはみ出すので、列の最小幅を 0 にして折り返す */
+@media (max-width: 340px) {
+  .recent-works__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+}

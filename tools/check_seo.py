@@ -12,6 +12,9 @@
       h1 が1つ・見出しの階層が飛んでいない / img に alt・width・height があるか /
       ★ noindex が入っていないこと（本番出力の必須条件）
   - sitemap.xml / feed.xml が XML として妥当、robots.txt に Sitemap 行と Disallow がある
+  - Google アナリティクス 4: config.php の ga4_id が設定されていれば公開ページ（＋404ページ）にタグが出ていること、
+      未設定なら出ていないこと。更新ページ（/admin）と静的コピー（プレビュー）には常に出ていないこと
+      （ローカルは config を読んで期待値を決める。本番は --ga4=G-XXXXXXX か --ga4=none で期待値を渡す。省略時は検出結果の表示と一貫性の確認だけ）
   - リポジトリの静的コピー（GitHub Pages プレビュー用）には noindex,nofollow が入り、canonical が本番URLを指すこと
 """
 import json, os, re, sys, urllib.request, urllib.error, html as htmlmod
@@ -22,6 +25,29 @@ LOCAL = '127.0.0.1' in BASE or 'localhost' in BASE
 PROD = 'https://prodesign.co.jp'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 errors, warns = [], []
+GA_RE = re.compile(r'googletagmanager\.com/gtag/js\?id=(G-[A-Z0-9]+)')
+
+
+def ga_expected():
+    """期待する測定ID。'' は「出ていないこと」、None は「期待値なし（検出結果の一貫性だけ見る）」"""
+    for a in sys.argv[1:]:
+        if a.startswith('--ga4='):
+            v = a.split('=', 1)[1]
+            return '' if v in ('', 'none') else v
+    if LOCAL:
+        import subprocess
+        code = "$c=require 'config.php'; if(is_file('config.local.php')) $c=array_merge($c, require 'config.local.php'); echo $c['ga4_id'] ?? '';"
+        try:
+            return subprocess.run(['php', '-r', code], cwd=ROOT, capture_output=True, text=True, timeout=30).stdout.strip()
+        except Exception as e:
+            warn('ga4', 'config を読めない: %s' % e)
+    return None
+
+
+def ga_ids(doc):
+    ids = set(GA_RE.findall(doc))
+    cfg = set(re.findall(r"gtag\('config','(G-[A-Z0-9]+)'\)", doc))
+    return ids, cfg
 
 
 def fetch(path):
@@ -161,6 +187,22 @@ def main():
         seen_t[t] = path
         if d in seen_d: err(path, 'description が %s と重複' % seen_d[d])
         seen_d[d] = path
+    # ---- Google アナリティクス 4
+    exp = ga_expected(); found = {}
+    st404, doc404, _ = fetch('/this-page-does-not-exist')
+    docs = [(path, fetch(path)[1]) for path, _ in pages + [(p, 'post') for p in posts]] + [('404ページ', doc404)]
+    for where, doc in docs:
+        ids, cfgids = ga_ids(doc)
+        if ids != cfgids: err(where, 'GA4 の読み込みIDと config のIDが不一致: %s / %s' % (sorted(ids), sorted(cfgids)))
+        if len(ids) > 1: err(where, 'GA4 のタグが複数: %s' % sorted(ids))
+        cur = next(iter(ids)) if ids else ''
+        found[cur] = found.get(cur, 0) + 1
+        if exp is not None and cur != exp: err(where, 'GA4: 期待 %s / 実際 %s' % (exp or '（タグなし）', cur or '（タグなし）'))
+    if len(found) > 1: err('ga4', 'ページによって GA4 の有無・IDが違う: %s' % found)
+    st, adm, _ = fetch('/admin')
+    if st == 200 and ('googletagmanager' in adm or 'gtag(' in adm): err('/admin', '更新ページに GA4 のタグが出ている')
+    ga_state = 'あり（%s）' % next(iter(found)) if (len(found) == 1 and next(iter(found))) else 'なし' if len(found) == 1 else '不一致'
+    ga_state += ' / 期待値: ' + ('指定なし' if exp is None else (exp or 'タグなし'))
     # ---- feed / robots
     st, fd, _ = fetch('/feed.xml')
     if st != 200: err('feed.xml', 'status %s' % st)
@@ -183,13 +225,18 @@ def main():
     if LOCAL:
         for path, kind in pages:
             f = os.path.join(ROOT, 'index.html' if path == '/' else path.lstrip('/'))
-            check_page(path, kind, open(f, encoding='utf-8').read(), 'static:' + os.path.basename(f), expect_noindex=True); n_static += 1
+            sdoc = open(f, encoding='utf-8').read()
+            if 'googletagmanager' in sdoc: err('static:' + os.path.basename(f), 'プレビュー用の静的コピーに GA4 のタグが入っている')
+            check_page(path, kind, sdoc, 'static:' + os.path.basename(f), expect_noindex=True); n_static += 1
         for p in posts:
             f = os.path.join(ROOT, p.lstrip('/'), 'index.html')
             if not os.path.exists(f): err('static:' + p, '静的コピーが無い（php tools/export_static.php を実行）'); continue
-            check_page(p, 'post', open(f, encoding='utf-8').read(), 'static:' + p, expect_noindex=True); n_static += 1
+            sdoc = open(f, encoding='utf-8').read()
+            if 'googletagmanager' in sdoc: err('static:' + p, 'プレビュー用の静的コピーに GA4 のタグが入っている')
+            check_page(p, 'post', sdoc, 'static:' + p, expect_noindex=True); n_static += 1
     print('base:', BASE)
     print('検査したページ: %d（固定 %d ＋ 記事 %d）、静的コピー: %d' % (len(pages) + len(posts), len(pages), len(posts), n_static))
+    print('GA4 タグ:', ga_state)
     for w in warns: print('  WARN', w)
     if errors:
         print('FAILED: %d' % len(errors))
